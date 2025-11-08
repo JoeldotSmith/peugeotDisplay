@@ -286,7 +286,7 @@
 
 /*1: Show the used memory and the memory fragmentation
  * Requires LV_MEM_CUSTOM = 0*/
-#define LV_USE_MEM_MONITOR 1
+#define LV_USE_MEM_MONITOR 0
 #if LV_USE_MEM_MONITOR
     #define LV_USE_MEM_MONITOR_POS LV_ALIGN_BOTTOM_LEFT
 #endif
@@ -363,16 +363,16 @@
  *https://fonts.google.com/specimen/Montserrat*/
 #define LV_FONT_MONTSERRAT_8  0
 #define LV_FONT_MONTSERRAT_10 0
-#define LV_FONT_MONTSERRAT_12 1
+#define LV_FONT_MONTSERRAT_12 0
 #define LV_FONT_MONTSERRAT_14 1
-#define LV_FONT_MONTSERRAT_16 1
+#define LV_FONT_MONTSERRAT_16 0
 #define LV_FONT_MONTSERRAT_18 0
 #define LV_FONT_MONTSERRAT_20 0
 #define LV_FONT_MONTSERRAT_22 0
 #define LV_FONT_MONTSERRAT_24 0
-#define LV_FONT_MONTSERRAT_26 1
+#define LV_FONT_MONTSERRAT_26 0
 #define LV_FONT_MONTSERRAT_28 0
-#define LV_FONT_MONTSERRAT_30 1
+#define LV_FONT_MONTSERRAT_30 0
 #define LV_FONT_MONTSERRAT_32 0
 #define LV_FONT_MONTSERRAT_34 0
 #define LV_FONT_MONTSERRAT_36 0
@@ -743,41 +743,6 @@
 
 /*Enable the examples to be built with the library*/
 #define LV_BUILD_EXAMPLES 0
-
-/*===================
- * DEMO USAGE
- ====================*/
-
-/*Show some widget. It might be required to increase `LV_MEM_SIZE` */
-#define LV_USE_DEMO_WIDGETS 0
-#if LV_USE_DEMO_WIDGETS
-#define LV_DEMO_WIDGETS_SLIDESHOW 0
-#endif
-
-/*Demonstrate the usage of encoder and keyboard*/
-#define LV_USE_DEMO_KEYPAD_AND_ENCODER 1
-
-/*Benchmark your system*/
-#define LV_USE_DEMO_BENCHMARK 1
-#if LV_USE_DEMO_BENCHMARK
-/*Use RGB565A8 images with 16 bit color depth instead of ARGB8565*/
-#define LV_DEMO_BENCHMARK_RGB565A8 0
-#endif
-
-/*Stress test for LVGL*/
-#define LV_USE_DEMO_STRESS 1
-
-/*Music player demo*/
-#define LV_USE_DEMO_MUSIC 1
-#if LV_USE_DEMO_MUSIC
-    #define LV_DEMO_MUSIC_SQUARE    0
-    #define LV_DEMO_MUSIC_LANDSCAPE 0
-    #define LV_DEMO_MUSIC_ROUND     0
-    #define LV_DEMO_MUSIC_LARGE     0
-    #define LV_DEMO_MUSIC_AUTO_PLAY 0
-#endif
-
-/*--END OF LV_CONF_H--*/
 
 #endif /*LV_CONF_H*/
 

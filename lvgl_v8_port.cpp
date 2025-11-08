@@ -561,7 +561,7 @@ static lv_disp_t *display_init(LCD *lcd)
 
     // Alloc draw buffers used by LVGL
     auto lcd_width = lcd->getFrameWidth();
-    auto lcd_height = lcd->getFrameHeight();
+    auto lcd_height = 340; // CUSTOM FOR PEUGEOT DISPLAY, ONLY NEED 340 PIXELS OF HEIGHT
     int buffer_size = 0;
 
     ESP_UTILS_LOGD("Malloc memory for LVGL buffer");
@@ -610,7 +610,7 @@ static lv_disp_t *display_init(LCD *lcd)
     disp_drv.ver_res = lcd_width;
 #else
     disp_drv.hor_res = lcd_width;
-    disp_drv.ver_res = lcd_height;
+    disp_drv.ver_res = lcd_height; 
 #endif
 #if LVGL_PORT_AVOID_TEAR    // Only available when the tearing effect is enabled
 #if LVGL_PORT_FULL_REFRESH

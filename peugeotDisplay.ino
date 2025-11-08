@@ -50,28 +50,16 @@ void setup()
 }
 
 void loop() {
-    static uint32_t chart_last_update = 0;
     static int angle = -60;
 
-    if (millis() - chart_last_update >= 100) {
-        if (ui_Image2 != NULL) {
-            // Check if the image is visible
-            bool visible = !lv_obj_has_flag(ui_Image1, LV_OBJ_FLAG_HIDDEN);
-            lv_coord_t x = lv_obj_get_x(ui_Image1);
-            lv_coord_t y = lv_obj_get_y(ui_Image1);
+    if (ui_Image2 != NULL) {
+        lv_img_set_angle(ui_Image2, angle*10); 
 
-            Serial.printf("angle: %d, visible: %d, pos: (%d, %d)\n", angle, visible, x, y);
-            lv_img_set_angle(ui_Image2, angle*10); 
-
-        } else {
-            Serial.println("ui_Image1 is NULL!");
-        }
         angle += 1;
         if (angle >= 60) angle = -60;
-
-        chart_last_update = millis();
+    } else {
+        Serial.println("ui_Image1 is NULL!");
     }
-
     
-    delay(5);
+    delay(100);
 }

@@ -13,17 +13,15 @@ lv_obj_t *ui_Screen1 = NULL;lv_obj_t *ui_Panel1 = NULL;lv_obj_t *ui_Container1 =
 void ui_Screen1_screen_init(void)
 {
 ui_Screen1 = lv_obj_create(NULL);
-lv_obj_clear_flag( ui_Screen1, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 
 ui_Panel1 = lv_obj_create(ui_Screen1);
 lv_obj_set_width( ui_Panel1, 1024);
 lv_obj_set_height( ui_Panel1, 328);
 lv_obj_set_x( ui_Panel1, 0 );
-lv_obj_set_y( ui_Panel1, -125 );
+lv_obj_set_y( ui_Panel1, 6 );
 lv_obj_set_align( ui_Panel1, LV_ALIGN_CENTER );
 lv_obj_set_flex_flow(ui_Panel1,LV_FLEX_FLOW_COLUMN);
 lv_obj_set_flex_align(ui_Panel1, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-lv_obj_clear_flag( ui_Panel1, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 lv_obj_set_style_bg_color(ui_Panel1, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT );
 lv_obj_set_style_bg_opa(ui_Panel1, 255, LV_PART_MAIN| LV_STATE_DEFAULT);
 lv_obj_set_style_border_color(ui_Panel1, lv_color_hex(0x2C2C2C), LV_PART_MAIN | LV_STATE_DEFAULT );
@@ -39,7 +37,6 @@ lv_obj_set_y( ui_Container1, -130 );
 lv_obj_set_align( ui_Container1, LV_ALIGN_CENTER );
 lv_obj_set_flex_flow(ui_Container1,LV_FLEX_FLOW_ROW);
 lv_obj_set_flex_align(ui_Container1, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
-lv_obj_clear_flag( ui_Container1, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 
 ui_Label1 = lv_label_create(ui_Container1);
 lv_obj_set_width( ui_Label1, LV_SIZE_CONTENT);  /// 1
@@ -62,7 +59,6 @@ lv_obj_set_height( ui_Container2, 215);
 lv_obj_set_align( ui_Container2, LV_ALIGN_CENTER );
 lv_obj_set_flex_flow(ui_Container2,LV_FLEX_FLOW_ROW);
 lv_obj_set_flex_align(ui_Container2, LV_FLEX_ALIGN_SPACE_AROUND, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-lv_obj_clear_flag( ui_Container2, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 
 ui_Chart1 = lv_chart_create(ui_Container2);
 lv_obj_set_width( ui_Chart1, 556);
@@ -92,7 +88,6 @@ lv_obj_remove_style_all(ui_Container3);
 lv_obj_set_width( ui_Container3, 323);
 lv_obj_set_height( ui_Container3, 240);
 lv_obj_set_align( ui_Container3, LV_ALIGN_CENTER );
-lv_obj_clear_flag( ui_Container3, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 lv_obj_clear_flag(ui_Container3, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
 lv_obj_add_flag(ui_Container3, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
 
