@@ -4,7 +4,6 @@
 // Project name: ui_redo
 
 #include "ui.h"
-#include "ui_helpers.h"
 
 ///////////////////// VARIABLES ////////////////////
 
