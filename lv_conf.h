@@ -46,10 +46,10 @@
  *=========================*/
 
 /*1: use custom malloc/free, 0: use the built-in `lv_mem_alloc()` and `lv_mem_free()`*/
-#define LV_MEM_CUSTOM 1
+#define LV_MEM_CUSTOM 0
 #if LV_MEM_CUSTOM == 0
     /*Size of the memory available for `lv_mem_alloc()` in bytes (>= 2kB)*/
-    #define LV_MEM_SIZE (256U * 1024U)
+    #define LV_MEM_SIZE (2U * 1024U * 1024U)
 
     /*Set an address for the memory pool instead of allocating it as a normal array. Can be in external SRAM too.*/
     #define LV_MEM_ADR 0     /*0: unused*/
@@ -136,8 +136,8 @@
  * "Transformed layers" (where transform_angle/zoom properties are used) use larger buffers
  * and can't be drawn in chunks. So these settings affects only widgets with opacity.
  */
-#define LV_LAYER_SIMPLE_BUF_SIZE          (48 * 1024)
-#define LV_LAYER_SIMPLE_FALLBACK_BUF_SIZE (12 * 1024)
+#define LV_LAYER_SIMPLE_BUF_SIZE          (256 * 1024)  // 256KB
+#define LV_LAYER_SIMPLE_FALLBACK_BUF_SIZE (64 * 1024)   // 64KB
 
 /*Default image cache size. Image caching keeps the images opened.
  *If only the built-in image formats are used there is no real advantage of caching. (I.e. if no new image decoder is added)
@@ -170,7 +170,7 @@
 
 /*Maximum buffer size to allocate for rotation.
  *Only used if software rotation is enabled in the display driver.*/
-#define LV_DISP_ROT_MAX_BUF (32*1024)
+#define LV_DISP_ROT_MAX_BUF (1024*1024)
 
 /*-------------
  * GPU
