@@ -17,14 +17,30 @@ using namespace esp_panel::board;
 Board *board = nullptr;
 static lv_chart_series_t *series;
 
+float voltage = 0.0;
+float boost = 0.0;
+bool inited = false;
+
 
 void onReceive(const esp_now_recv_info *info, const uint8_t *data, int len) {
+  if (!inited) return;
   char msg[len + 1];
   memcpy(msg, data, len);
   msg[len] = 0;
-  Serial.printf("Received from %02X:%02X:%02X:%02X:%02X:%02X => %s\n",
-                info->src_addr[0], info->src_addr[1], info->src_addr[2],
-                info->src_addr[3], info->src_addr[4], info->src_addr[5], msg);
+
+  if (sscanf(msg, "%f-%f", &voltage, &boost) == 2) {
+    Serial.printf("Voltage: %.2f V, Boost: %.2f\n", voltage, boost);
+
+    lvgl_port_lock(-1);
+    lv_img_set_angle(ui_Image2, (int)boost*120-600); 
+    lv_chart_set_next_value(ui_Chart1, series, (int)boost*10);
+    char buf[16];
+    snprintf(buf, sizeof(buf), "%.1f", voltage);
+    lv_label_set_text(ui_Label1, buf);
+    lvgl_port_unlock();
+  } else {
+    Serial.printf("Parse error, got: %s\n", msg);
+  }
 }
 
 void setup()
@@ -67,43 +83,44 @@ void setup()
     lvgl_port_unlock();
     
     Serial.println("Setup complete");
+    inited = true;
 }
 
 void loop() {
-    static int angle = -60;
-    static unsigned long pauseStartTime = 0;
-    static bool isPaused = false;
-    
-    if (angle <= 30) {
-        isPaused = false;  // Reset pause state when animating
-        
-        if (ui_Image2 != NULL) {
-            lvgl_port_lock(-1);
-            lv_img_set_angle(ui_Image2, angle*10); 
-            lv_chart_set_next_value(ui_Chart1, series, (int)(0.5*angle+60));
-            lvgl_port_unlock();
-            angle += 1;
-            
-            if (angle > 30) {
-                // Start the 10 second pause
-                isPaused = true;
-                pauseStartTime = millis();
-            }
-        } else {
-            Serial.println("ui_Image2 is NULL!");
-        }
-    } else {
-        // Non-blocking 10 second wait
-        if (!isPaused) {
-            // Just started pausing
-            isPaused = true;
-            pauseStartTime = millis();
-        }
-        
-        if (millis() - pauseStartTime >= 10000) {
-            // 10 seconds have passed, reset angle
-            angle = -60;
-            isPaused = false;
-        }
-    }
+    // static int angle = -60;
+    // static unsigned long pauseStartTime = 0;
+    // static bool isPaused = false;
+    //
+    // if (angle <= 30) {
+    //     isPaused = false;  // Reset pause state when animating
+    //
+    //     if (ui_Image2 != NULL) {
+    //         lvgl_port_lock(-1);
+    //         lv_img_set_angle(ui_Image2, angle*10); 
+    //         lv_chart_set_next_value(ui_Chart1, series, (int)(0.5*angle+60));
+    //         lvgl_port_unlock();
+    //         angle += 1;
+    //
+    //         if (angle > 30) {
+    //             // Start the 10 second pause
+    //             isPaused = true;
+    //             pauseStartTime = millis();
+    //         }
+    //     } else {
+    //         Serial.println("ui_Image2 is NULL!");
+    //     }
+    // } else {
+    //     // Non-blocking 10 second wait
+    //     if (!isPaused) {
+    //         // Just started pausing
+    //         isPaused = true;
+    //         pauseStartTime = millis();
+    //     }
+    //
+    //     if (millis() - pauseStartTime >= 10000) {
+    //         // 10 seconds have passed, reset angle
+    //         angle = -60;
+    //         isPaused = false;
+    //     }
+    // }
 }
