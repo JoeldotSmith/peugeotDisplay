@@ -7,6 +7,48 @@
 
 lv_obj_t *ui_Screen1 = NULL;lv_obj_t *ui_Panel1 = NULL;lv_obj_t *ui_Container1 = NULL;lv_obj_t *ui_Label1 = NULL;lv_obj_t *ui_Label2 = NULL;lv_obj_t *ui_Container2 = NULL;lv_obj_t *ui_Chart1 = NULL;lv_obj_t *ui_Container3 = NULL;lv_obj_t *ui_Image1 = NULL;lv_obj_t *ui_Image2 = NULL;
 // event funtions
+static void draw_event_cb(lv_event_t * e)
+{
+    lv_obj_t * obj = lv_event_get_target(e);
+
+    /*Add the faded area before the lines are drawn*/
+    lv_obj_draw_part_dsc_t * dsc = lv_event_get_draw_part_dsc(e);
+    if(dsc->part == LV_PART_ITEMS) {
+        if(!dsc->p1 || !dsc->p2) return;
+
+        /*Add a line mask that keeps the area below the line*/
+        lv_draw_mask_line_param_t line_mask_param;
+        lv_draw_mask_line_points_init(&line_mask_param, dsc->p1->x, dsc->p1->y, dsc->p2->x, dsc->p2->y,
+                                      LV_DRAW_MASK_LINE_SIDE_BOTTOM);
+        int16_t line_mask_id = lv_draw_mask_add(&line_mask_param, NULL);
+
+        /*Add a fade effect: transparent bottom covering top*/
+        lv_coord_t h = lv_obj_get_height(obj);
+        lv_draw_mask_fade_param_t fade_mask_param;
+        lv_draw_mask_fade_init(&fade_mask_param, &obj->coords, LV_OPA_COVER, obj->coords.y1 + h / 8, LV_OPA_TRANSP,
+                               obj->coords.y2);
+        int16_t fade_mask_id = lv_draw_mask_add(&fade_mask_param, NULL);
+
+        /*Draw a rectangle that will be affected by the mask*/
+        lv_draw_rect_dsc_t draw_rect_dsc;
+        lv_draw_rect_dsc_init(&draw_rect_dsc);
+        draw_rect_dsc.bg_opa = LV_OPA_60;
+        draw_rect_dsc.bg_color = dsc->line_dsc->color;
+
+        lv_area_t a;
+        a.x1 = dsc->p1->x;
+        a.x2 = dsc->p2->x - 1;
+        a.y1 = LV_MIN(dsc->p1->y, dsc->p2->y);
+        a.y2 = obj->coords.y2;
+        lv_draw_rect(dsc->draw_ctx, &draw_rect_dsc, &a);
+
+        /*Remove the masks*/
+        lv_draw_mask_free_param(&line_mask_param);
+        lv_draw_mask_free_param(&fade_mask_param);
+        lv_draw_mask_remove_id(line_mask_id);
+        lv_draw_mask_remove_id(fade_mask_id);
+    }
+}
 
 // build funtions
 
@@ -75,6 +117,7 @@ lv_chart_series_t* ui_Chart1_series_1 = lv_chart_add_series(ui_Chart1, lv_color_
 lv_chart_set_all_value(ui_Chart1, ui_Chart1_series_1, 0);
 
 lv_chart_set_update_mode(ui_Chart1, LV_CHART_UPDATE_MODE_SHIFT);
+lv_obj_add_event_cb(ui_Chart1, draw_event_cb, LV_EVENT_DRAW_PART_BEGIN, NULL);
 
 lv_obj_set_style_bg_color(ui_Chart1, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT );
 lv_obj_set_style_bg_opa(ui_Chart1, 255, LV_PART_MAIN| LV_STATE_DEFAULT);
