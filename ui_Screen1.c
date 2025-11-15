@@ -5,7 +5,18 @@
 
 #include "ui.h"
 
-lv_obj_t *ui_Screen1 = NULL;lv_obj_t *ui_Panel1 = NULL;lv_obj_t *ui_Container1 = NULL;lv_obj_t *ui_Label1 = NULL;lv_obj_t *ui_Label2 = NULL;lv_obj_t *ui_Container2 = NULL;lv_obj_t *ui_Chart1 = NULL;lv_obj_t *ui_Container3 = NULL;lv_obj_t *ui_Image1 = NULL;lv_obj_t *ui_Image2 = NULL;
+lv_obj_t *ui_Screen1 = NULL;
+lv_obj_t *ui_Panel1 = NULL;
+lv_obj_t *ui_Container1 = NULL;
+lv_obj_t *ui_Container4 = NULL;
+lv_obj_t *ui_Label1 = NULL;
+lv_obj_t *ui_Label2 = NULL;
+lv_obj_t *ui_Container2 = NULL;
+lv_obj_t *ui_Chart1 = NULL;
+lv_obj_t *ui_Container3 = NULL;
+lv_obj_t *ui_Image1 = NULL;
+lv_obj_t *ui_Image2 = NULL;
+lv_obj_t *ui_Indicator = NULL;
 // event funtions
 static void draw_event_cb(lv_event_t * e)
 {
@@ -80,9 +91,26 @@ lv_obj_set_align( ui_Container1, LV_ALIGN_CENTER );
 lv_obj_set_flex_flow(ui_Container1,LV_FLEX_FLOW_ROW);
 lv_obj_set_flex_align(ui_Container1, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
 
-ui_Label1 = lv_label_create(ui_Container1);
-lv_obj_set_width( ui_Label1, LV_SIZE_CONTENT);  /// 1
-lv_obj_set_height( ui_Label1, LV_SIZE_CONTENT);   /// 1
+ui_Container4 = lv_obj_create(ui_Container1);
+lv_obj_remove_style_all(ui_Container4);
+lv_obj_set_width( ui_Container4, 150);
+lv_obj_set_height( ui_Container4, 50);
+lv_obj_set_x( ui_Container4, -288 );
+lv_obj_set_y( ui_Container4, -130 );
+lv_obj_set_align( ui_Container4, LV_ALIGN_CENTER );
+lv_obj_set_flex_flow(ui_Container4,LV_FLEX_FLOW_ROW);
+lv_obj_set_flex_align(ui_Container4, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_START);
+
+ui_Indicator = lv_obj_create(ui_Container4);
+lv_obj_set_size(ui_Indicator, 16, 15);
+lv_obj_set_style_radius(ui_Indicator, LV_RADIUS_CIRCLE, 0);
+lv_obj_set_style_bg_color(ui_Indicator, lv_palette_main(LV_PALETTE_RED), 0);
+lv_obj_set_style_bg_opa(ui_Indicator, LV_OPA_COVER, 0);
+lv_obj_set_align(ui_Indicator, LV_ALIGN_CENTER );
+
+ui_Label1 = lv_label_create(ui_Container4);
+lv_obj_set_width( ui_Label1, LV_SIZE_CONTENT);  
+lv_obj_set_height( ui_Label1, LV_SIZE_CONTENT);
 lv_obj_set_align( ui_Label1, LV_ALIGN_CENTER );
 lv_label_set_text(ui_Label1,"--.-V");
 lv_obj_set_style_text_font(ui_Label1, &ui_font_bitcount_40, LV_PART_MAIN| LV_STATE_DEFAULT);
@@ -173,5 +201,6 @@ ui_Chart1= NULL;
 ui_Container3= NULL;
 ui_Image1= NULL;
 ui_Image2= NULL;
+ui_Indicator= NULL;
 
 }

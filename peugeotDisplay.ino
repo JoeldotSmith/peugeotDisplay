@@ -28,6 +28,29 @@ volatile Data latest;
 volatile Data current;
 volatile bool dataReady = false;
 
+// 0 = disconnected from ESPNOW, 1 = disconnected from ELM, 2 = fully connected 
+int previousConnected = 0; 
+int connected = 0; 
+unsigned long lastReceive = 0;
+
+
+void handle_connection() {
+  if (previousConnected != connected) {
+    switch (connected) {
+      case 0:
+        lv_obj_set_style_bg_color(ui_Indicator, lv_palette_main(LV_PALETTE_RED), 0);
+        break;
+      case 1:
+        lv_obj_set_style_bg_color(ui_Indicator, lv_palette_main(LV_PALETTE_AMBER), 0);
+        break;
+      case 2:
+        lv_obj_set_style_bg_color(ui_Indicator, lv_palette_main(LV_PALETTE_GREEN), 0);
+        break;
+    }
+
+    previousConnected = connected;
+  }
+} 
 
 void handle_boost(){ 
   lv_chart_set_next_value(ui_Chart1, series, (int)(latest.boost * 10));
@@ -36,7 +59,6 @@ void handle_boost(){
   if (current.boost != latest.boost) {
     lv_img_set_angle(ui_Image2, (int)(latest.boost * 120 - 600));
   }
-
 } 
 
 void handle_voltage(){ 
@@ -56,8 +78,19 @@ void handle_coolant(){
 } 
 
 void onReceive(const esp_now_recv_info *info, const uint8_t *data, int len) {
-  if (sscanf((const char*)data, "%f-%f-%f", &latest.voltage, &latest.coolantTemp, &latest.boost) == 3)
-    dataReady = true;
+    float v, c, b;
+    if (sscanf((const char*)data, "%f-%f-%f", &v, &c, &b) == 3) {
+        if (v == -1.0f && c == -1.0f && b == -1.0f) {
+          connected = 1; // connected to ESPNOW but not connected to ELM
+        } else {
+            latest.voltage = v;
+            latest.coolantTemp = c;
+            latest.boost = b;
+            dataReady = true;
+            connected = 2;
+        }
+        lastReceive = millis();
+    }
 }
 
 void setup()
@@ -104,7 +137,11 @@ void setup()
 }
 
 void loop() {
+  unsigned long now = millis();
+  if (now - lastReceive > 5000) connected = 0; // 5 seconds disconnected from ESPNOW
+
   lvgl_port_lock(-1);
+  handle_connection();
   if (dataReady) {
     dataReady = false;
 
@@ -115,6 +152,7 @@ void loop() {
     memcpy((void*)&current, (const void*)&latest, sizeof(Data));
   }
   lvgl_port_unlock();
+
 
   delay(5);
 }
