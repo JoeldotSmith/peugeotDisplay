@@ -42,14 +42,14 @@ ui_Label1 = lv_label_create(ui_Container1);
 lv_obj_set_width( ui_Label1, LV_SIZE_CONTENT);  /// 1
 lv_obj_set_height( ui_Label1, LV_SIZE_CONTENT);   /// 1
 lv_obj_set_align( ui_Label1, LV_ALIGN_CENTER );
-lv_label_set_text(ui_Label1,"14.1V");
+lv_label_set_text(ui_Label1,"--.-V");
 lv_obj_set_style_text_font(ui_Label1, &ui_font_bitcount_40, LV_PART_MAIN| LV_STATE_DEFAULT);
 
 ui_Label2 = lv_label_create(ui_Container1);
 lv_obj_set_width( ui_Label2, LV_SIZE_CONTENT);  /// 1
 lv_obj_set_height( ui_Label2, LV_SIZE_CONTENT);   /// 1
 lv_obj_set_align( ui_Label2, LV_ALIGN_CENTER );
-lv_label_set_text(ui_Label2,"12:12");
+lv_label_set_text(ui_Label2,"---.- C");
 lv_obj_set_style_text_font(ui_Label2, &ui_font_bitcount_40, LV_PART_MAIN| LV_STATE_DEFAULT);
 
 ui_Container2 = lv_obj_create(ui_Panel1);
@@ -72,6 +72,7 @@ lv_chart_set_axis_tick( ui_Chart1, LV_CHART_AXIS_PRIMARY_X, 10, 5, 5, 2, true, 5
 lv_chart_set_axis_tick( ui_Chart1, LV_CHART_AXIS_PRIMARY_Y, 10, 5, 5, 2, false, 50);
 lv_chart_set_axis_tick( ui_Chart1, LV_CHART_AXIS_SECONDARY_Y, 10, 5, 0, 0, false, 25);
 lv_chart_series_t* ui_Chart1_series_1 = lv_chart_add_series(ui_Chart1, lv_color_hex(0x08B2FF), LV_CHART_AXIS_PRIMARY_Y);
+lv_chart_set_all_value(ui_Chart1, ui_Chart1_series_1, 0);
 
 lv_chart_set_update_mode(ui_Chart1, LV_CHART_UPDATE_MODE_SHIFT);
 

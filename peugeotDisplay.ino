@@ -17,30 +17,47 @@ using namespace esp_panel::board;
 Board *board = nullptr;
 static lv_chart_series_t *series;
 
-float voltage = 0.0;
-float boost = 0.0;
 bool inited = false;
 
+struct Data {
+  float voltage;
+  float boost;
+  float coolantTemp;
+};
+volatile Data latest;
+volatile Data current;
+volatile bool dataReady = false;
+
+
+void handle_boost(){ 
+  lv_chart_set_next_value(ui_Chart1, series, (int)(latest.boost * 10));
+
+  // needle
+  if (current.boost != latest.boost) {
+    lv_img_set_angle(ui_Image2, (int)(latest.boost * 120 - 600));
+  }
+
+} 
+
+void handle_voltage(){ 
+  if (current.voltage != latest.voltage) {
+    char buf[16];
+    snprintf(buf, sizeof(buf), "%.1fV", latest.voltage);
+    lv_label_set_text(ui_Label1, buf);
+  }
+} 
+
+void handle_coolant(){ 
+  if (current.coolantTemp != latest.coolantTemp) {
+    char buf1[16];
+    snprintf(buf1, sizeof(buf1), "%.1f C", latest.coolantTemp);
+    lv_label_set_text(ui_Label2, buf1);
+  }
+} 
 
 void onReceive(const esp_now_recv_info *info, const uint8_t *data, int len) {
-  if (!inited) return;
-  char msg[len + 1];
-  memcpy(msg, data, len);
-  msg[len] = 0;
-
-  if (sscanf(msg, "%f-%f", &voltage, &boost) == 2) {
-    Serial.printf("Voltage: %.2f V, Boost: %.2f\n", voltage, boost);
-
-    lvgl_port_lock(-1);
-    lv_img_set_angle(ui_Image2, (int)boost*120-600); 
-    lv_chart_set_next_value(ui_Chart1, series, (int)boost*10);
-    char buf[16];
-    snprintf(buf, sizeof(buf), "%.1f", voltage);
-    lv_label_set_text(ui_Label1, buf);
-    lvgl_port_unlock();
-  } else {
-    Serial.printf("Parse error, got: %s\n", msg);
-  }
+  if (sscanf((const char*)data, "%f-%f-%f", &latest.voltage, &latest.coolantTemp, &latest.boost) == 3)
+    dataReady = true;
 }
 
 void setup()
@@ -87,40 +104,17 @@ void setup()
 }
 
 void loop() {
-    // static int angle = -60;
-    // static unsigned long pauseStartTime = 0;
-    // static bool isPaused = false;
-    //
-    // if (angle <= 30) {
-    //     isPaused = false;  // Reset pause state when animating
-    //
-    //     if (ui_Image2 != NULL) {
-    //         lvgl_port_lock(-1);
-    //         lv_img_set_angle(ui_Image2, angle*10); 
-    //         lv_chart_set_next_value(ui_Chart1, series, (int)(0.5*angle+60));
-    //         lvgl_port_unlock();
-    //         angle += 1;
-    //
-    //         if (angle > 30) {
-    //             // Start the 10 second pause
-    //             isPaused = true;
-    //             pauseStartTime = millis();
-    //         }
-    //     } else {
-    //         Serial.println("ui_Image2 is NULL!");
-    //     }
-    // } else {
-    //     // Non-blocking 10 second wait
-    //     if (!isPaused) {
-    //         // Just started pausing
-    //         isPaused = true;
-    //         pauseStartTime = millis();
-    //     }
-    //
-    //     if (millis() - pauseStartTime >= 10000) {
-    //         // 10 seconds have passed, reset angle
-    //         angle = -60;
-    //         isPaused = false;
-    //     }
-    // }
+  lvgl_port_lock(-1);
+  if (dataReady) {
+    dataReady = false;
+
+    handle_boost();
+    handle_voltage();
+    handle_coolant();
+
+    memcpy((void*)&current, (const void*)&latest, sizeof(Data));
+  }
+  lvgl_port_unlock();
+
+  delay(5);
 }
